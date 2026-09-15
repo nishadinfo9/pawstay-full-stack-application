@@ -12,5 +12,5 @@ export const users = pgTable('users', {
     password: varchar('password', { length: 255 }).notNull(),
     role: roleEnum('role').notNull().default('CUSTOMER'),
     avatar: text('avatar'),
-    createdAt: timestamp("createdAt", { withTimezone: true }).defaultNow().notNull()
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull()
 })
