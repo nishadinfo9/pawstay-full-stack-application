@@ -12,9 +12,9 @@ export const bookingStatusEnum = pgEnum('booking_status', [
 
 export const bookings = pgTable('bookings', {
     id: serial('id').primaryKey(),
-    userId: integer('user_id').references(() => users.id, { onDelete: 'cascade' }),
-    petId: integer('pet_id').references(() => pets.id, { onDelete: 'cascade' }),
-    roomId: integer('room_id').references(() => pets.id, { onDelete: 'set null' }),
+    userId: integer('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
+    petId: integer('pet_id').references(() => pets.id, { onDelete: 'cascade' }).notNull(),
+    roomId: integer('room_id').references(() => pets.id, { onDelete: 'set null' }).notNull(),
     checkInDate: date('check_in_date').notNull(),
     checkOutDate: date('check_out_date').notNull(),
     roomPrice: numeric('room_price', { precision: 10, scale: 2 }).notNull(),

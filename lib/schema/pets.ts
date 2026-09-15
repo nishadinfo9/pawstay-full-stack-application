@@ -3,7 +3,7 @@ import { users } from "./users";
 
 export const pets = pgTable('pets',{
     id: serial('id').primaryKey(),
-    user_id: integer('user_id').references(()=> users.id, {onDelete: 'cascade'}),
+    user_id: integer('user_id').references(()=> users.id, {onDelete: 'cascade'}).notNull(),
     petName: varchar('petName',{length: 255}).notNull(),
     type: varchar("type", { length: 100 }).notNull(),
     breed: varchar("breed", { length: 100 }).notNull(),

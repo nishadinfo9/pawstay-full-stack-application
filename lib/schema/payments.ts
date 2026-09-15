@@ -9,7 +9,7 @@ export const paymentStatusEnum = pgEnum('payment_status', [
 
 export const payments = pgTable('payments', {
     id: serial('id').primaryKey(),
-    invoiceId: integer('invoice_id').references(() => invoices.id, { onDelete: 'set null' }),
+    invoiceId: integer('invoice_id').references(() => invoices.id, { onDelete: 'set null' }).notNull(),
     amount: numeric('amount', { precision: 10, scale: 2 }).notNull(),
     status: paymentStatusEnum('status').default('PENDING').notNull(),
     transactionId: varchar('transaction_id').unique().notNull(),

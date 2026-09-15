@@ -3,7 +3,7 @@ import { invoices } from "./invoices";
 
 export const invoiceItems = pgTable('invoice_items',{
     id: serial('id').primaryKey(),
-    invoiceId: integer('invoice_id').references(()=> invoices.id,{onDelete: 'cascade'}),
+    invoiceId: integer('invoice_id').references(()=> invoices.id,{onDelete: 'cascade'}).notNull(),
     description: varchar('description',{length: 500}).notNull(),
     quantity: integer('quantity').default(1).notNull(),
     unitPrice: numeric('unit_price', {precision: 10, scale: 2}).notNull(),
