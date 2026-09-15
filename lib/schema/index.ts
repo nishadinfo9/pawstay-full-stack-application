@@ -2,3 +2,8 @@ export * from './users';
 export * from './pets';
 export * from './rooms';
 export * from './services';
+export * from './bookings';
+export * from './booking_services';
+export * from './invoices';
+export * from './invoice_items';
+export * from './payments';
