@@ -11,5 +11,5 @@ export const pets = pgTable('pets',{
     gender: varchar("gender", { length: 50 }).notNull(),
     image: text('image'),
     notes: varchar('notes', {length: 500}),
-    created_at: timestamp('created_at', {withTimezone: true}).defaultNow().notNull()
+    createdAt: timestamp('created_at', {withTimezone: true}).defaultNow().notNull()
 })
