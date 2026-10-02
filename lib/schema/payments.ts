@@ -1,4 +1,4 @@
-import { date, integer, numeric, pgEnum, pgTable, serial, timestamp, varchar } from "drizzle-orm/pg-core";
+import { date, integer, numeric, pgEnum, pgTable, serial, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
 import { invoices } from "./invoices";
 
 export const paymentStatusEnum = pgEnum('payment_status', [
@@ -8,8 +8,8 @@ export const paymentStatusEnum = pgEnum('payment_status', [
 ])
 
 export const payments = pgTable('payments', {
-    id: serial('id').primaryKey(),
-    invoiceId: integer('invoice_id').references(() => invoices.id, { onDelete: 'set null' }).notNull(),
+    id: uuid('id').primaryKey().defaultRandom(),
+    invoiceId: uuid('invoice_id').references(() => invoices.id, { onDelete: 'set null' }).notNull(),
     amount: numeric('amount', { precision: 10, scale: 2 }).notNull(),
     status: paymentStatusEnum('status').default('PENDING').notNull(),
     transactionId: varchar('transaction_id').unique().notNull(),

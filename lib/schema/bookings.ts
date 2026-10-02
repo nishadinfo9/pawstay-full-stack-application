@@ -1,4 +1,4 @@
-import { date, integer, numeric, pgEnum, pgTable, serial, timestamp } from "drizzle-orm/pg-core";
+import { date, integer, numeric, pgEnum, pgTable, serial, timestamp, uuid } from "drizzle-orm/pg-core";
 import { users } from "./users";
 import { pets } from "./pets";
 
@@ -11,10 +11,10 @@ export const bookingStatusEnum = pgEnum('booking_status', [
 ])
 
 export const bookings = pgTable('bookings', {
-    id: serial('id').primaryKey(),
-    userId: integer('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
-    petId: integer('pet_id').references(() => pets.id, { onDelete: 'cascade' }).notNull(),
-    roomId: integer('room_id').references(() => pets.id, { onDelete: 'set null' }).notNull(),
+    id: uuid('id').primaryKey().defaultRandom(),
+    userId: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
+    petId: uuid('pet_id').references(() => pets.id, { onDelete: 'cascade' }).notNull(),
+    roomId: uuid('room_id').references(() => pets.id, { onDelete: 'set null' }).notNull(),
     checkInDate: date('check_in_date').notNull(),
     checkOutDate: date('check_out_date').notNull(),
     roomPrice: numeric('room_price', { precision: 10, scale: 2 }).notNull(),

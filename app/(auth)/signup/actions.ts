@@ -1,13 +1,11 @@
 "use server";
 
 import { registerUser } from "@/features/auth/auth.service";
-import { CreateUserInput } from "@/features/auth/auth.types";
+import { SignUpUserInput } from "@/features/auth/auth.types";
 import { signupSchema } from "@/features/auth/auth.validation";
 
-export async function signupAction(data: CreateUserInput) {
-    const validationResult =await signupSchema.safeParse(data);
-
-    console.log('validationResult', validationResult)
+export async function signupAction(data: SignUpUserInput) {
+    const validationResult = signupSchema.safeParse(data);
 
     if (!validationResult.success) {
         throw new Error("Invalid input data");

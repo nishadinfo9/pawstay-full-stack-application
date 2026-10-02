@@ -1,27 +1,23 @@
 import { createUser, findUserByEmail } from "./auth.repository";
-import { authenticateUserInput, CreateUserInput } from "./auth.types";
+import { SignUpUserInput } from "./auth.types";
+import { LoginSchema } from "./auth.validation";
 import { hashPassword, isPasswordCorrect } from "./password.service";
 
-export const registerUser = async (data: CreateUserInput) => {
-    console.log('data', data)
+export const registerUser = async (data: SignUpUserInput) => {
     const existingUser = await findUserByEmail(data.email);
-    console.log('existingUser', existingUser)
-    // যদি user already exists → error
+
     if (existingUser) {
         throw new Error("User already exists");
     }
 
-    // password hash করো
     const hashedPassword = await hashPassword(data.password);
 
-    // createUser() call করো
     const newUser = await createUser({ ...data, password: hashedPassword });
 
-    // created user return করো
     return newUser[0];
 }
 
-export async function authenticateUser(data: authenticateUserInput) {
+export async function authenticateUser(data: LoginSchema) {
     const user = await findUserByEmail(data.email);
 
     if (!user) {

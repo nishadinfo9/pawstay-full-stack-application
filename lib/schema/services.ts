@@ -1,7 +1,7 @@
-import { boolean, numeric, pgTable, serial, timestamp, varchar } from "drizzle-orm/pg-core";
+import { boolean, numeric, pgTable, serial, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
 
 export const services = pgTable('services',{
-    id: serial('id').primaryKey(),
+    id: uuid('id').primaryKey().defaultRandom(),
     serviceName: varchar('serviceName',{length: 255}).notNull(),
     price: numeric('price', {precision: 10, scale: 2}).notNull(),
     is_available: boolean('is_available').default(true),

@@ -62,12 +62,10 @@ export function LoginForm({
     }
   }
 
-
-
-
-
   const googleLogin = async () => {
-    console.log('Google login clicked');
+    signIn('google', {
+      callbackUrl: callbackUrl,
+    })
   };
 
   return (

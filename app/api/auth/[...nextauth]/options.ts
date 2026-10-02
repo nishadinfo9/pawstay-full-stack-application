@@ -2,14 +2,15 @@ import { NextAuthOptions } from "next-auth"
 import GoogleProvider from 'next-auth/providers/google';
 import CredentialsProvider from "next-auth/providers/credentials"
 import { isPasswordCorrect } from "@/features/auth/password.service";
-import { findUserByEmail } from "@/features/auth/auth.repository";
+import { createUser, findUserByEmail } from "@/features/auth/auth.repository";
 
 export const authOptions: NextAuthOptions = {
     providers: [
         GoogleProvider({
             clientId: process.env.GOOGLE_CLIENT_ID as string,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
-        }),
+        },
+        ),
         CredentialsProvider({
             id: 'credentials',
             name: 'Credentials',
@@ -34,8 +35,6 @@ export const authOptions: NextAuthOptions = {
                     return null;
                 }
 
-                console.log('user', user)
-
                 return {
                     id: user.id,
                     fullName: user.fullName,
@@ -47,21 +46,45 @@ export const authOptions: NextAuthOptions = {
     ],
 
     callbacks: {
+        async signIn({ user, account }) {
+            if (account?.provider === "google") {
+                const existingUser = await findUserByEmail(user.email as string);
+                if (!existingUser) {
+                    await createUser({
+                        fullName: user.name as string,
+                        email: user.email as string,
+                        password: 'google password',
+                        avatar: user.image as string,
+                        provider: account.provider,
+                        externalId: user.id,
+                    });
+                }
+                return true;
+            }
+            return true;
+        },
         async jwt({ token, user, account }) {
-            console.log('account', account)
             if (user) {
-                token.id = user.id;
-                token.role = user.role;
+                const dbUser = await findUserByEmail(user.email as string);
+                if (dbUser) {
+                    token.id = dbUser.id
+                    token.email = dbUser.email
+                    token.role = dbUser.role
+                    token.fullName = dbUser.fullName
+                }
             }
             return token;
         },
 
         async session({ session, token }) {
-            console.log('session', session)
-            if (session.user) {
-                session.user.id = token.id as string;
-                session.user.role = token.role as string;
-            }
+                console.log("SESSION CALLBACK TOKEN:", token);
+            session.user = {
+                id: token.id,
+                email: token.email,
+                role: token.role as "admin" | "customer",
+                fullName: token.fullName,
+            };
+             console.log("SESSION CALLBACK RESULT:", session);
             return session;
         },
     },
@@ -73,6 +96,7 @@ export const authOptions: NextAuthOptions = {
     session: {
         strategy: 'jwt',
     },
+
 
     secret: process.env.NEXTAUTH_SECRET as string,
 }

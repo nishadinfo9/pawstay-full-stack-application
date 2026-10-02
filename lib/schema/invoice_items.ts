@@ -1,9 +1,9 @@
-import { integer, numeric, pgTable, serial, varchar } from "drizzle-orm/pg-core";
+import { integer, numeric, pgTable, serial, uuid, varchar } from "drizzle-orm/pg-core";
 import { invoices } from "./invoices";
 
 export const invoiceItems = pgTable('invoice_items',{
-    id: serial('id').primaryKey(),
-    invoiceId: integer('invoice_id').references(()=> invoices.id,{onDelete: 'cascade'}).notNull(),
+    id: uuid('id').primaryKey().defaultRandom(),
+    invoiceId: uuid('invoice_id').references(()=> invoices.id,{onDelete: 'cascade'}).notNull(),
     description: varchar('description',{length: 500}).notNull(),
     quantity: integer('quantity').default(1).notNull(),
     unitPrice: numeric('unit_price', {precision: 10, scale: 2}).notNull(),

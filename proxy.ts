@@ -1,4 +1,5 @@
 import { withAuth } from "next-auth/middleware"
+import { NextResponse } from "next/server"
 
 export default withAuth(
   function proxy(req) {
@@ -6,8 +7,14 @@ export default withAuth(
     const token = req.nextauth.token
 
     if (pathname === "/login" && token) {
-      return Response.redirect(
-        new URL("/dashboard", req.url)
+      return NextResponse.redirect(
+        new URL("/dashboard/overview", req.url)
+      )
+    }
+
+    if (pathname === "/dashboard") {
+      return NextResponse.redirect(
+        new URL("/dashboard/overview", req.url)
       )
     }
   },
