@@ -1,6 +1,5 @@
 'use client'
 
-import * as z from "zod"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -19,18 +18,17 @@ import {
 import { Input } from "@/components/ui/input"
 import Link from "next/link"
 import { Controller, useForm } from "react-hook-form"
-import { signupValidationSchema } from "./signupValidation"
-import { useAuth, useSignUp } from '@clerk/nextjs'
-import { useRouter } from 'next/navigation'
 import { zodResolver } from "@hookform/resolvers/zod"
+import { signIn } from "next-auth/react"
+import { useRouter } from "next/navigation"
+import { signupAction } from "../actions"
+import { signupSchema, SignupSchema } from "@/features/auth/auth.validation"
 
 export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
-  const { signUp, errors, fetchStatus } = useSignUp()
-  const { isSignedIn } = useAuth()
-  const router = useRouter()
+const router = useRouter()
 
-  const form = useForm<z.infer<typeof signupValidationSchema>>({
-    resolver: zodResolver(signupValidationSchema),
+  const form = useForm<SignupSchema>({
+    resolver: zodResolver(signupSchema),
     defaultValues: {
       fullName: "",
       email: "",
@@ -38,84 +36,26 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
     },
   })
 
-  async function onSubmit(data: z.infer<typeof signupValidationSchema>) {
-    const { error } = await signUp.password({
-      emailAddress: data.email,
-      password: data.password,
-    });
+  async function onSubmit(data: SignupSchema) {
+     try {
+      console.log(data);
+      await signupAction(data);
 
-    if (error) {
-      console.error(JSON.stringify(error, null, 2));
-      return;
-    }
-
-    // Send verification email
-    if (!error) {
-      await signUp.verifications.sendEmailCode();
-    }
-  };
-
-  const handleVerify = async (formData: FormData) => {
-    const code = formData.get('code') as string
-
-    await signUp.verifications.verifyEmailCode({
-      code,
-    })
-
-    if (signUp.status === 'complete') {
-      await signUp.finalize({
-        navigate: ({ session, decorateUrl }) => {
-          if (session?.currentTask) {
-            console.log(session?.currentTask);
-            return;
-          }
-
-          const url = decorateUrl('/');
-          if (url.startsWith('http')) {
-            // Only use window.location on web platform
-            if (url.startsWith('http')) {
-              window.location.href = url
-            } else {
-              router.push(url)
-            }
-          } else {
-            console.error('Sign-up attempt not complete:', signUp)
-            router.replace(url);
-          }
-        },
+      const result = await signIn('credentials', {
+        email: data.email,
+        password: data.password,
+        redirect: false,
       });
-    } else {
-      console.error('Sign-up attempt not complete:', signUp);
+
+      if (result?.ok) {
+        router.replace('/dashboard');
+        router.refresh();
+      }
+    } catch (error) {
+      console.log(error);
     }
+
   };
-
-  // Don't show anything if already signed in or sign-up is complete
-  if (signUp.status === 'complete' || isSignedIn) return null;
-
-
-
-  if (
-    signUp.status === 'missing_requirements' &&
-    signUp.unverifiedFields.includes('email_address') &&
-    signUp.missingFields.length === 0
-  ) {
-    return (
-      <>
-        <h1>Verify your account</h1>
-        <form action={handleVerify}>
-          <div>
-            <label htmlFor="code">Code</label>
-            <input id="code" name="code" type="text" />
-          </div>
-          {errors.fields.code && <p>{errors.fields.code.message}</p>}
-          <button type="submit" disabled={fetchStatus === 'fetching'}>
-            Verify
-          </button>
-        </form>
-        <button onClick={() => signUp.verifications.sendEmailCode()}>I need a new code</button>
-      </>
-    )
-  }
 
   return (
     <Card {...props}>

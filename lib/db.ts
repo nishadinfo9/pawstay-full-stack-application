@@ -1,14 +1,15 @@
 import { drizzle } from 'drizzle-orm/node-postgres';
 
 const db = drizzle({
-    connection: {
-        connectionString: process.env.DATABASE_URL,
-        ssl: true
-    }
+  connection: {
+    connectionString: process.env.DATABASE_URL,
+    ssl: {
+      rejectUnauthorized: false,
+    },
+  },
 });
 
 export default db;
-
 
 export async function testDatabaseConnection() {
   try {

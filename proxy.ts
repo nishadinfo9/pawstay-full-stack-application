@@ -1,14 +1,48 @@
-import { clerkMiddleware } from '@clerk/nextjs/server';
+import { withAuth } from "next-auth/middleware"
 
-export default clerkMiddleware();
+export default withAuth(
+  function proxy(req) {
+    const pathname = req.nextUrl.pathname
+    const token = req.nextauth.token
+
+    if (pathname === "/login" && token) {
+      return Response.redirect(
+        new URL("/dashboard", req.url)
+      )
+    }
+  },
+  {
+    callbacks: {
+      authorized: ({ token, req }) => {
+        const pathname = req.nextUrl.pathname
+
+        if (pathname === "/login") {
+          return true
+        }
+
+        if (
+          pathname.startsWith("/dashboard") ||
+          pathname.startsWith("/profile")
+        ) {
+          return !!token
+        }
+
+
+        return true
+      }
+    },
+
+    pages: {
+      signIn: "/login",
+    },
+  },
+)
 
 export const config = {
   matcher: [
-    // Skip Next.js internals and all static files, unless found in search params
-    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
-    // Always run for Clerk's auto-proxy path
-    '/__clerk/:path*',
-    // Always run for API routes
-    '/(api|trpc)(.*)',
-  ],
-};
+    '/',
+    "/login",
+    "/dashboard/:path*",
+    "/profile/:path*",
+  ]
+}

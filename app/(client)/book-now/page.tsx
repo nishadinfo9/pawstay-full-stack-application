@@ -1,16 +1,12 @@
-'use client'
-
 import Container from '@/components/container/container'
+import React from 'react'
 
-
-const Home = () => {
-
-
+const BookNow = () => {
   return (
     <Container>
-      <div>Home</div>
+        <div>BookNow</div>
     </Container>
   )
 }
 
-export default Home
+export default BookNow
