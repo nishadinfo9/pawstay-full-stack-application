@@ -21,6 +21,7 @@ export interface CreatePetRepositoryInput {
 
 export interface Pet {
   id: string;
+  owner: string
   petName: string;
   type: string;
   breed: string;

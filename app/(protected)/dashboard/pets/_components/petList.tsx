@@ -1,6 +1,3 @@
-'use client'
-
-import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -9,20 +6,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+
 import { Pet } from "@/features/pets/petTypes";
-import { Eye, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
-import Image from "next/image";
-import PetDetailsDialog from "./pet-details-dialog";
-import { useState } from "react";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import PetActions from "./pet-actions";
 
 interface PetListProps {
   pets: Pet[];
 }
 
 const PetList = ({ pets }: PetListProps) => {
-  const [selectedPet, setSelectedPet] = useState<Pet | null>(null);
-
   return (
     <div className="rounded-lg border bg-background">
       <Table>
@@ -35,7 +27,9 @@ const PetList = ({ pets }: PetListProps) => {
             <TableHead>Age</TableHead>
             <TableHead>Gender</TableHead>
             <TableHead>Owner</TableHead>
-            <TableHead className="w-[60px]" >Actions</TableHead>
+            <TableHead className="w-[60px]">
+              Actions
+            </TableHead>
           </TableRow>
         </TableHeader>
 
@@ -43,12 +37,11 @@ const PetList = ({ pets }: PetListProps) => {
           {pets.length > 0 ? (
             pets.map((pet) => (
               <TableRow key={pet.id}>
-
-                <TableCell className="font-medium">
+                <TableCell>
                   <img
-                    src={pet.image || ''}
+                    src={pet.image || ""}
                     alt={pet.petName}
-                    className="w-8 h-8 rounded-md"
+                    className="h-8 w-8 rounded-md"
                   />
                 </TableCell>
 
@@ -61,8 +54,7 @@ const PetList = ({ pets }: PetListProps) => {
                 <TableCell>{pet.breed}</TableCell>
 
                 <TableCell>
-                  {pet.age}{" "}
-                  {pet.age === 1 ? "year" : "years"}
+                  {pet.age} {pet.age === 1 ? "year" : "years"}
                 </TableCell>
 
                 <TableCell>{pet.gender}</TableCell>
@@ -70,47 +62,14 @@ const PetList = ({ pets }: PetListProps) => {
                 <TableCell>{pet.owner}</TableCell>
 
                 <TableCell>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger >
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8"
-                      >
-                        <MoreHorizontal className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-
-                   <DropdownMenuContent align="end">
-  <DropdownMenuItem
-    onClick={() => {
-      setSelectedPet(pet);
-    }}
-  >
-    <Eye className="h-4 w-4" />
-    View details
-  </DropdownMenuItem>
-
-  <DropdownMenuItem>
-    <Pencil className="h-4 w-4" />
-    Update Pet
-  </DropdownMenuItem>
-
-  <DropdownMenuItem className="text-destructive focus:text-destructive">
-    <Trash2 className="h-4 w-4" />
-    Delete Pet
-  </DropdownMenuItem>
-</DropdownMenuContent>
-                  </DropdownMenu>
+                  <PetActions pet={pet} />
                 </TableCell>
-
-
               </TableRow>
             ))
           ) : (
             <TableRow>
               <TableCell
-                colSpan={7}
+                colSpan={8}
                 className="h-32 text-center text-muted-foreground"
               >
                 No pets found.
@@ -119,18 +78,8 @@ const PetList = ({ pets }: PetListProps) => {
           )}
         </TableBody>
       </Table>
-
-      <PetDetailsDialog
-        pet={selectedPet}
-        open={!!selectedPet}
-        onOpenChange={(open) => {
-          if (!open) {
-            setSelectedPet(null);
-          }
-        }}
-      />
     </div>
-  )
-}
+  );
+};
 
-export default PetList
+export default PetList;

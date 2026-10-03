@@ -21,8 +21,6 @@ export default function PetDetailsDialog({
 }: PetDetailsDialogProps) {
     if (!pet) return null;
 
-    console.log(pet)
-
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-lg">
