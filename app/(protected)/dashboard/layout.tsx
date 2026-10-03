@@ -15,10 +15,8 @@ export default async function DashboardLayout({
     return null
   }
 
-  const profilePromise = profileActions()
-
   return (
-    <DashboardClient profilePromise={profilePromise}>
+    <DashboardClient>
       {children}
     </DashboardClient>
   )

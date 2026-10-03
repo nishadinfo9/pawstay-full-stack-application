@@ -1,10 +1,14 @@
+
 import Container from '@/components/container/container'
-import React from 'react'
+import CreatePost from './actions'
 
 const BookNow = () => {
   return (
     <Container>
-        <div>BookNow</div>
+      <form action={CreatePost} className="flex flex-col gap-2">
+        <input name="title" type="text" placeholder="New Post Title" required />
+        <button type="submit">Create Post</button>
+      </form>
     </Container>
   )
 }

@@ -1,7 +1,3 @@
-"use client"
-
-import { use } from "react"
-import { useRouter } from "next/navigation"
 import { AppSidebar } from "./app-sidebar"
 
 import {
@@ -20,29 +16,9 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar"
+import AvatarDropdown from "./AvatarDropdown"
 
-import AvatarDropdown from "./avatar"
-
-type Profile = {
-  id: string
-  fullName: string
-  email: string
-  avatar: string | null
-}
-
-type DashboardClientProps = {
-  profilePromise: Promise<Profile>
-  children: React.ReactNode
-}
-
-export default function DashboardClient({
-  profilePromise,
-  children,
-}: DashboardClientProps) {
-  const router = useRouter()
-
-  const profile = use(profilePromise)
-  console.log(profile)
+export default function DashboardClient({ children }: { children: React.ReactNode }) {
 
   return (
     <SidebarProvider>
@@ -82,11 +58,7 @@ export default function DashboardClient({
 
           <div className="flex items-center gap-3">
 
-            <AvatarDropdown
-              imageUrl={profile.avatar ?? undefined}
-              name={profile.fullName}
-              email={profile.email}
-            />
+            <AvatarDropdown />
 
           </div>
         </header>
