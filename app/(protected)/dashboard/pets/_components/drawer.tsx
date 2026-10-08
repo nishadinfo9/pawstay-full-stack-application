@@ -8,13 +8,12 @@ import {
     DrawerTitle,
     DrawerTrigger,
 } from "@/components/ui/drawer";
-import PetForm from "./pet-form";
+import PetForm from "./form/pet-form";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 
 const PetDrawer = () => {
-
     const [open, setOpen] = useState(false)
 
     return (
@@ -33,7 +32,7 @@ const PetDrawer = () => {
                 </DrawerHeader>
 
                 <div className="flex-1 overflow-y-auto px-4 py-4">
-                    <PetForm />
+                    <PetForm/>
                 </div>
 
             </DrawerContent>

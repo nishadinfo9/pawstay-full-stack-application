@@ -11,8 +11,6 @@ import type {
 export async function createPetService(
   data: CreatePetRepositoryInput
 ) {
-  // Business logic can live here
-
   return createPetRepository(data);
 }
 

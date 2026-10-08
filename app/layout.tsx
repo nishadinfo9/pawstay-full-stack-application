@@ -3,6 +3,7 @@ import { Poppins } from 'next/font/google'
 import './globals.css'
 import { Toaster } from '@/components/ui/toast'
 import Providers from '@/utils/providers'
+import { QueryProvider } from '@/provider/query-provider'
 
 const poppins = Poppins({
   weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
@@ -20,13 +21,19 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <Providers>
-      <html lang="en" className={`${poppins.className} h-full antialiased`}>
-        <body className="min-h-full flex flex-col">
-          <Toaster />
-          {children}
-        </body>
-      </html>
-    </Providers>
+    <html lang="en" className={`${poppins.className} h-full antialiased`}>
+      <body className="min-h-full flex flex-col">
+        <QueryProvider>
+          <Providers>
+            <main>
+              <Toaster />
+              {children}
+            </main>
+          </Providers>
+        </QueryProvider>
+      </body>
+    </html>
+
   )
 }
+

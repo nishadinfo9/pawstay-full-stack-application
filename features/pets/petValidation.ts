@@ -3,7 +3,7 @@ import { z } from "zod";
 export const petSchema = z.object({
   petName: z
     .string()
-    .min(1, "Pet name is required")
+    .min(3, "Pet name at least 3 character")
     .max(255, "Pet name must be less than 255 characters"),
 
   type: z
@@ -17,14 +17,15 @@ export const petSchema = z.object({
     .max(100, "Breed must be less than 100 characters"),
 
   age: z
-    .number()
-    .int("Age must be a whole number")
-    .min(0, "Age cannot be negative"),
+    .number({
+      error: "Age is required",
+    })
+    .min(1, "Age must be at least 1"),
 
   gender: z
-    .string()
-    .min(1, "Gender is required")
-    .max(50, "Gender must be less than 50 characters"),
+    .enum(["male", "female"], {
+      error: "Gender is required",
+    }),
 
   image: z
     .string()

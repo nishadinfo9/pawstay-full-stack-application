@@ -29,8 +29,8 @@ const data = {
                     url: "/dashboard/pets",
                 },
                 {
-                    title: "Booking History",
-                    url: "/dashboard/booking-history",
+                    title: "Rooms",
+                    url: "/dashboard/rooms",
 
                 },
             ],
